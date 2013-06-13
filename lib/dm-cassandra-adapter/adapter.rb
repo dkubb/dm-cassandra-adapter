@@ -48,7 +48,7 @@ module DataMapper
 
     end # CassandraAdapter
 
-    const_added :CassandraAdaptr
+    const_added :CassandraAdapter
 
   end # Adapters
 end # DataMapper
