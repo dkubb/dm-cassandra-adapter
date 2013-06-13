@@ -48,7 +48,7 @@ module DataMapper
             attr_reader :bind_variables
 
             def initialize(table, fields, conditions, order, limit)
-              @table          = table 
+              @table          = table
               @columns        = fields.join(SEPARATOR)
               @conditions     = conditions
               @where          = []
@@ -73,7 +73,7 @@ module DataMapper
 
             def visit_conditions(conditions = @conditions)
               case conditions
-              when Query::Conditions::AndOperation 
+              when Query::Conditions::AndOperation
                 visit_conjunction(conditions)
               when Query::Conditions::AbstractComparison
                 visit_comparison(conditions)
@@ -121,13 +121,13 @@ module DataMapper
 
             def visit_binary_relation(subject, value, relation)
               @where          << subject.field << relation << PLACEHOLDER
-              @bind_variables << value 
+              @bind_variables << value
             end
 
             def visit_in(subject, value)
               return unless subject.key?
               @where          << subject.field << 'IN' << "(#{PLACEHOLDER})"
-              @bind_variables << value 
+              @bind_variables << value
             end
 
             def visit_order(order)

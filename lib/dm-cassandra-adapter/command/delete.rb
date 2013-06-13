@@ -33,7 +33,7 @@ module DataMapper
           class Statement
             DELETE      = 'DELETE FROM %{table} WHERE %{key}'.freeze
             PLACEHOLDER = '?'.freeze
-            AND         = ' AND '.freeze 
+            AND         = ' AND '.freeze
 
             def initialize(table, key)
               @table = table
