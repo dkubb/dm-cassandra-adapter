@@ -51,20 +51,21 @@ module DataMapper
               @table          = table
               @columns        = fields.join(SEPARATOR)
               @conditions     = conditions
+              @order          = []
               @where          = []
               @bind_variables = []
               visit_conditions
-#              visit_order(order)
+#              visit_order(order) if equals_key_condition?
 
               # Only set the limit if the order is defined, otherwise we must
               # retrieve all rows and sort/limit in-memory.
-#              @limit = limit if @order
+              @limit = limit if @order.any?
             end
 
             def to_s
               statement = [ SELECT % { columns: @columns, table: @table } ]
               statement << WHERE % @where.join(SPACE)     if @where.any?
-              statement << ORDER % @order.join(SEPARATOR) if @order
+              statement << ORDER % @order.join(SEPARATOR) if @order.any?
               statement << LIMIT % @limit                 if @limit
               statement.join(' ')
             end
@@ -131,10 +132,8 @@ module DataMapper
             end
 
             def visit_order(order)
-              @order = if equals_key_condition?
-                order.map do |direction|
-                  "#{direction.target.field} #{direction.operator.to_s.upcase}"
-                end
+              @order = order.map do |direction|
+                "#{direction.target.field} #{direction.operator.to_s.upcase}"
               end
             end
 
