@@ -19,7 +19,6 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
   end
 
   def create_table
-    puts "create table"
     @adapter.execute('CREATE TABLE heffalumps (id bigint PRIMARY KEY, color text, num_spots int, striped boolean)')
   end
 
