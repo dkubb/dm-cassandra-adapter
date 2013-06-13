@@ -21,8 +21,8 @@ module DataMapper
               attributes = resource.dirty_attributes
 
               # Set the default key
-              # TODO: choose a better way to create an integer id
-              key.set!(resource, attributes[key] ||= SimpleUUID::UUID.new.to_i & 0x7fffffffffffffff)
+              # TODO: replace with a better way to create an unique integer id
+              key.set!(resource, attributes[key] ||= timestamp)
 
               statement = Statement.new(table, attributes)
               @adapter.execute(statement.to_s, *statement.bind_variables)
@@ -32,6 +32,12 @@ module DataMapper
 
           def count
             @resources.count
+          end
+
+        private
+
+          def timestamp
+            Time.now.strftime('%s%9N').to_i
           end
 
           class Statement
