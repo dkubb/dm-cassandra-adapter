@@ -16,7 +16,7 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
   end
 
   def create_table
-    adapter.execute('CREATE TABLE heffalumps (id bigint PRIMARY KEY, color text, num_spots int, striped boolean)')
+    adapter.execute('CREATE TABLE heffalumps (id timeuuid PRIMARY KEY, color text, num_spots int, striped boolean)')
   end
 
   # Use methods to avoid let() in before(:all) warnings
@@ -28,7 +28,7 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
     @model ||= Class.new {
       include DataMapper::Resource
 
-      property :id,        DataMapper::Property::Serial
+      property :id,        DataMapper::Property::SimpleUUID
       property :color,     DataMapper::Property::String
       property :num_spots, DataMapper::Property::Integer
       property :striped,   DataMapper::Property::Boolean

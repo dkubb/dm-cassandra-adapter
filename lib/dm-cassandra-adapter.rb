@@ -3,6 +3,8 @@
 require 'dm-core'
 require 'ciql'
 
+require 'dm-cassandra-adapter/property/simple_uuid'
+
 require 'dm-cassandra-adapter/command/create'
 require 'dm-cassandra-adapter/command/read'
 require 'dm-cassandra-adapter/command/update'
