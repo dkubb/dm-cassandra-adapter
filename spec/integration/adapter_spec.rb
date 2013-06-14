@@ -23,6 +23,21 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
   def adapter() DataMapper::Spec.adapter end
   def repository() DataMapper.repository(adapter.name) end
 
+  # Define a custom model with a UUID PK
+  def heffalump_model
+    @model ||= Class.new {
+      include DataMapper::Resource
+
+      property :id,        DataMapper::Property::Serial
+      property :color,     DataMapper::Property::String
+      property :num_spots, DataMapper::Property::Integer
+      property :striped,   DataMapper::Property::Boolean
+
+      # This is needed for DataMapper.finalize
+      def self.name() 'Heffalump' end
+    }.tap { DataMapper.finalize }
+  end
+
   before :all do
     setup_keyspace
     create_table
