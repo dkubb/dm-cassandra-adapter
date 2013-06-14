@@ -16,15 +16,15 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
   end
 
   def create_table
-    @adapter.execute('CREATE TABLE heffalumps (id bigint PRIMARY KEY, color text, num_spots int, striped boolean)')
+    adapter.execute('CREATE TABLE heffalumps (id bigint PRIMARY KEY, color text, num_spots int, striped boolean)')
   end
+
+  # Use methods to avoid let() in before(:all) warnings
+  def adapter() DataMapper::Spec.adapter end
+  def repository() DataMapper.repository(adapter.name) end
 
   before :all do
     setup_keyspace
-
-    @adapter    = DataMapper::Spec.adapter
-    @repository = DataMapper.repository(@adapter.name)
-
     create_table
   end
 
