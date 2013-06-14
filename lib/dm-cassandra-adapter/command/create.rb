@@ -37,8 +37,8 @@ module DataMapper
 
           def generate_value_for(property)
             case property
-            when Property::Serial     then Time.now.strftime('%s%9N').to_i
-            when Property::SimpleUUID then property.primitive.new
+            when Property::Serial     then Time.now.strftime('%s%9N')
+            when Property::SimpleUUID then Time.now
             else
               raise "Unknown property type: #{property.class}"
             end
