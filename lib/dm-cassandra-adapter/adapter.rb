@@ -6,11 +6,10 @@ module DataMapper
     # Cassandra DataMapper Adapter
     class CassandraAdapter < AbstractAdapter
 
-      def initialize(name, options = {})
-        # TODO: use the options to specify the keyspace
+      def initialize(*)
         super
-        @client      = Ciql.client
         @consistency = options.fetch(:consistency, :any)
+        setup_client
       end
 
       def create(resources)
@@ -40,6 +39,14 @@ module DataMapper
       def execute(statement, *bind_variables)
         # TODO: make this return the expected results
         @client.execute(statement, *bind_variables, @consistency)
+      end
+
+    private
+
+      def setup_client
+        @client = Ciql::Client::Thrift.new(
+          options.merge(keyspace: options.fetch(:path)[1..-1]).symbolize_keys
+        )
       end
 
     end # CassandraAdapter

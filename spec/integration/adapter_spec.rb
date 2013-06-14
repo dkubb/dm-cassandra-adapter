@@ -15,10 +15,6 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
     retry
   end
 
-  def use_keyspace
-    @adapter.execute('USE datamapper_default_tests')
-  end
-
   def create_table
     @adapter.execute('CREATE TABLE heffalumps (id bigint PRIMARY KEY, color text, num_spots int, striped boolean)')
   end
@@ -29,7 +25,6 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
     @adapter    = DataMapper::Spec.adapter
     @repository = DataMapper.repository(@adapter.name)
 
-    use_keyspace
     create_table
   end
 
