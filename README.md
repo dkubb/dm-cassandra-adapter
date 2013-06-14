@@ -11,9 +11,9 @@
 [coveralls]: https://coveralls.io/r/dkubb/dm-cassandra-adapter
 
 dm-cassandra-adapter
-===================
+====================
 
-DataMapper Cassandra Adapter
+Cassandra DataMapper Adapter
 
 Installation
 ------------
