@@ -15,16 +15,9 @@ module DataMapper
           def call
             # TODO: batch the statements
             @resources.each do |resource|
-              model      = resource.model
-              table      = model.storage_name(@adapter.name)
-              key        = model.serial(@adapter.name)
-              attributes = resource.dirty_attributes
-
-              # Set the default key
-              # TODO: replace with a better way to create an unique integer id
-              key.set!(resource, attributes[key] ||= timestamp)
-
-              statement = Statement.new(table, attributes)
+              set_serial(resource)
+              table     = resource.model.storage_name(@adapter.name)
+              statement = Statement.new(table, resource.dirty_attributes)
               @adapter.execute(statement.to_s, *statement.bind_variables)
             end
             self
@@ -36,8 +29,18 @@ module DataMapper
 
         private
 
-          def timestamp
-            Time.now.strftime('%s%9N').to_i
+          def set_serial(resource)
+            key = resource.model.serial(@adapter.name)
+            return if key.nil? || resource.send(key.name)
+            resource.send("#{key.name}=", generate_value_for(key))
+          end
+
+          def generate_value_for(property)
+            case property
+            when Property::Serial then Time.now.strftime('%s%9N').to_i
+            else
+              raise "Unknown property type: #{property.class}"
+            end
           end
 
           class Statement
