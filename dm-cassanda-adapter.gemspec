@@ -15,6 +15,8 @@ Gem::Specification.new do |gem|
   gem.test_files       = `git ls-files -- spec/{unit,integration}`.split($/)
   gem.extra_rdoc_files = %w[LICENSE README.md CONTRIBUTING.md TODO]
 
+  gem.required_ruby_version = '>= 1.9.3'
+
   gem.add_runtime_dependency('dm-core',     '~> 1.2.1')
   gem.add_runtime_dependency('ciql',        '~> 0.2')
   gem.add_runtime_dependency('simple_uuid', '~> 0.3')
