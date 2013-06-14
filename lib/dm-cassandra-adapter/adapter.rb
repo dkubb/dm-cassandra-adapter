@@ -37,8 +37,8 @@ module DataMapper
       end
 
       def execute(statement, *bind_variables)
-        # TODO: make this return the expected results
         @client.execute(statement, *bind_variables, @consistency)
+        nil
       end
 
     private
