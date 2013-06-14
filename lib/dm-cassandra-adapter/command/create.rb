@@ -13,7 +13,7 @@ module DataMapper
           end
 
           def call
-            # TODO: batch the requests
+            # TODO: batch the statements
             @resources.each do |resource|
               model      = resource.model
               table      = model.storage_name(@adapter.name)

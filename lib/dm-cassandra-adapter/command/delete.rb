@@ -13,7 +13,7 @@ module DataMapper
           end
 
           def call
-            # TODO: batch the requests
+            # TODO: batch the statements
             # TODO: handle bulk deletes with IN() when there is one key
             @collection.each do |resource|
               model = resource.model
