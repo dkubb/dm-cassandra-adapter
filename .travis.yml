@@ -3,7 +3,7 @@ services:
   - cassandra
 before_install: gem install bundler
 bundler_args: --without yard guard benchmarks
-script: "bundle exec rake ci"
+script: "bundle exec rake spec"
 rvm:
   - 1.9.3
   - 2.0.0
