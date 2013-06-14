@@ -34,11 +34,7 @@ module DataMapper
       end
 
       def select(statement, *bind_variables)
-        @client.execute(statement, *bind_variables).each do |row|
-          row.each do |key, value|
-            row[key] = SimpleUUID::UUID.new(value.to_s) if value.kind_of?(Cql::Uuid)
-          end
-        end
+        @client.execute(statement, *bind_variables).map(&:to_hash)
       end
 
       def execute(statement, *bind_variables)

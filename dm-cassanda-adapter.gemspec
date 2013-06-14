@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = %w[LICENSE README.md CONTRIBUTING.md TODO]
 
   gem.add_runtime_dependency('dm-core',     '~> 1.2.1')
-  gem.add_runtime_dependency('ciql',        '~> 0.1', '>= 0.1.0')
+  gem.add_runtime_dependency('ciql',        '~> 0.2')
   gem.add_runtime_dependency('simple_uuid', '~> 0.3')
 
   gem.add_development_dependency('bundler', '~> 1.3', '>= 1.3.5')

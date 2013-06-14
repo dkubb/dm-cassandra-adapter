@@ -7,11 +7,12 @@ ENV['ADAPTER_SUPPORTS'] = 'all'
 
 describe 'DataMapper::Adapters::CassandraAdapter' do
   def setup_keyspace
-    @adapter.execute('DROP KEYSPACE datamapper_default_tests')
-  rescue Cql::QueryError
-    # Allow failures when the keyspace does not exist
-  ensure
-    @adapter.execute("CREATE KEYSPACE datamapper_default_tests WITH replication = {'class': ?, 'replication_factor': ?}", 'SimpleStrategy', 1)
+    client = Ciql.client
+    client.execute("CREATE KEYSPACE datamapper_default_tests WITH replication = {'class': ?, 'replication_factor': ?}", 'SimpleStrategy', 1)
+  rescue CassandraCQL::Error::InvalidRequestException => exception
+    raise unless exception.message.include?('Cannot add existing keyspace')
+    client.execute('DROP KEYSPACE datamapper_default_tests')
+    retry
   end
 
   def use_keyspace
@@ -23,10 +24,11 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
   end
 
   before :all do
+    setup_keyspace
+
     @adapter    = DataMapper::Spec.adapter
     @repository = DataMapper.repository(@adapter.name)
 
-    setup_keyspace
     use_keyspace
     create_table
   end
