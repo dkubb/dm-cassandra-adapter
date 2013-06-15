@@ -13,14 +13,28 @@ module DataMapper
         L_PARENTHESIS = '('.freeze
         R_PARENTHESIS = ')'.freeze
 
+      protected
+
+        def and(statements)
+          statements.join(AND)
+        end
+
       private
 
         def eql(property)
           "#{property.field} = #{PLACEHOLDER}"
         end
 
-        def parenthesis(*statements)
-          "(#{statements.join(SEPARATOR)})"
+        def join(statements)
+          statements.join(SPACE)
+        end
+
+        def list(statements)
+          statements.join(SEPARATOR)
+        end
+
+        def parenthesis(statements)
+          "(#{list(statements)})"
         end
 
       end # Statement

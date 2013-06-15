@@ -43,7 +43,7 @@ module DataMapper
 
             def initialize(table, fields, conditions, order, limit)
               @table          = table
-              @columns        = fields.join(SEPARATOR)
+              @columns        = list(fields)
               @conditions     = conditions
               @order          = []
               @where          = []
@@ -58,10 +58,10 @@ module DataMapper
 
             def to_s
               statement = [ SELECT % { columns: @columns, table: @table } ]
-              statement << WHERE % @where.join(SPACE)     if @where.any?
-              statement << ORDER % @order.join(SEPARATOR) if @order.any?
-              statement << LIMIT % @limit                 if @limit
-              statement.join(' ')
+              statement << WHERE % join(@where) if @where.any?
+              statement << ORDER % list(@order) if @order.any?
+              statement << LIMIT % @limit       if @limit
+              join(statement)
             end
 
           private

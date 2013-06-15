@@ -48,8 +48,8 @@ module DataMapper
             def to_s
               UPDATE % {
                 table:   @table,
-                columns: columns.join(SEPARATOR),
-                where:   where.join(AND)
+                columns: list(columns),
+                where:   self.and(where)
               }
             end
 

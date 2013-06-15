@@ -45,7 +45,7 @@ module DataMapper
             def to_s
               DELETE % {
                 table: @table,
-                where: where.join(AND),
+                where: self.and(where),
               }
             end
 
