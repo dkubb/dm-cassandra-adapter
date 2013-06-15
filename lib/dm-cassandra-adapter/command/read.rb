@@ -35,9 +35,9 @@ module DataMapper
 
           class Statement < Statement
             SELECT = 'SELECT %{columns} FROM %{table}'.freeze
-            WHERE  = 'WHERE %s'.freeze
-            ORDER  = 'ORDER BY %s'.freeze
-            LIMIT  = 'LIMIT %d'.freeze
+            WHERE  = ' WHERE %s'.freeze
+            ORDER  = ' ORDER BY %s'.freeze
+            LIMIT  = ' LIMIT %d'.freeze
 
             attr_reader :bind_variables
 
@@ -53,15 +53,15 @@ module DataMapper
 
               # Only set the limit if the order is defined, otherwise we must
               # retrieve all rows and sort/limit in-memory.
-              @limit = limit if @order.any?
+              @limit = limit unless @order.empty?
             end
 
             def to_s
-              statement = [ SELECT % { columns: @columns, table: @table } ]
-              statement << WHERE % join(@where) if @where.any?
-              statement << ORDER % list(@order) if @order.any?
-              statement << LIMIT % @limit       if @limit
-              join(statement)
+              statement = SELECT % { columns: @columns, table: @table }
+              statement << WHERE % join(@where) unless @where.empty?
+              statement << ORDER % list(@order) unless @order.empty?
+              statement << LIMIT % @limit       unless @limit.nil?
+              statement
             end
 
           private
@@ -81,7 +81,9 @@ module DataMapper
               head, *tail = conjunction.to_a
               visit_conditions(head)
               tail.each do |operand|
+                @where << SPACE
                 @where << AND
+                @where << SPACE
                 @where << L_PARENTHESIS
                 visit_conditions(operand)
                 @where << R_PARENTHESIS
@@ -95,39 +97,45 @@ module DataMapper
             end
 
             def visit_eql(*args)
-              visit_binary_relation(*args, '=')
+              visit_binary_relation(*args, EQUALS_SIGN)
             end
 
             def visit_gt(*args)
-              visit_binary_relation(*args, '>') if equals_key_condition?
+              return unless equals_key_condition?
+              visit_binary_relation(*args, GREATER_THAN_SIGN)
             end
 
             def visit_lt(*args)
-              visit_binary_relation(*args, '<') if equals_key_condition?
+              return unless equals_key_condition?
+              visit_binary_relation(*args, LESS_THAN_SIGN)
             end
 
             def visit_gte(*args)
-              visit_binary_relation(*args, '>=') if equals_key_condition?
+              return unless equals_key_condition?
+              visit_binary_relation(*args, GREATER_THAN_OR_EQUAL_TO)
             end
 
             def visit_lte(*args)
-              visit_binary_relation(*args, '<=') if equals_key_condition?
+              return unless equals_key_condition?
+              visit_binary_relation(*args, LESS_THAN_OR_EQUAL_TO)
             end
 
             def visit_binary_relation(subject, value, relation)
-              @where          << subject.field << relation << PLACEHOLDER
+              @where          << field(subject) << relation << PLACEHOLDER
               @bind_variables << value
             end
 
             def visit_in(subject, value)
               return unless subject.key?
-              @where          << subject.field << 'IN' << "(#{PLACEHOLDER})"
+              @where          << field(subject) << IN << parenthesis(PLACEHOLDER)
               @bind_variables << value
             end
 
             def visit_order(order)
               @order = order.map do |direction|
-                "#{direction.target.field} #{direction.operator.to_s.upcase}"
+                field(direction.target).tap do |statement|
+                  statement << SPACE << DESC if direction.operator == :desc
+                end
               end
             end
 

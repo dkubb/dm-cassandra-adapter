@@ -6,27 +6,26 @@ module DataMapper
 
       # Base class for command statements
       class Statement
-        PLACEHOLDER   = '?'.freeze
-        SEPARATOR     = ', '.freeze
-        SPACE         = ' '.freeze
-        AND           = ' AND '.freeze
-        L_PARENTHESIS = '('.freeze
-        R_PARENTHESIS = ')'.freeze
+        include Constants
 
       protected
 
         def and(statements)
-          statements.join(AND)
+          statements.join(SPACE + AND + SPACE)
         end
 
       private
 
+        def field(property)
+          property.field.dup
+        end
+
         def eql(property)
-          "#{property.field} = #{PLACEHOLDER}"
+          "#{field(property)} #{EQUALS_SIGN} #{PLACEHOLDER}"
         end
 
         def join(statements)
-          statements.join(SPACE)
+          statements.join
         end
 
         def list(statements)
@@ -34,11 +33,10 @@ module DataMapper
         end
 
         def parenthesis(statements)
-          "(#{list(statements)})"
+          L_PARENTHESIS + list(Array(statements)) + R_PARENTHESIS
         end
 
       end # Statement
-
     end # CassandraAdapter
   end # Adapters
 end # DataMapper
