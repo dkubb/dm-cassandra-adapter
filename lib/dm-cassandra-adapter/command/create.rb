@@ -3,10 +3,10 @@
 module DataMapper
   module Adapters
     class CassandraAdapter < AbstractAdapter
-      class Command
+      module Command
 
         # Create records in Cassandra
-        class Create < self
+        class Create
           def initialize(adapter, resources)
             @adapter   = adapter
             @resources = resources
@@ -44,10 +44,8 @@ module DataMapper
             end
           end
 
-          class Statement
-            INSERT      = 'INSERT INTO %{table} %{columns} VALUES %{values}'.freeze
-            PLACEHOLDER = '?'.freeze
-            SEPARATOR   = ', '.freeze
+          class Statement < Statement
+            INSERT = 'INSERT INTO %{table} %{columns} VALUES %{values}'.freeze
 
             def initialize(table, attributes)
               @table      = table
@@ -68,12 +66,6 @@ module DataMapper
                 columns: parenthesis(columns),
                 values:  parenthesis(columns.map { PLACEHOLDER })
               }
-            end
-
-          private
-
-            def parenthesis(*statements)
-              "(#{statements.join(SEPARATOR)})"
             end
 
           end # Statement

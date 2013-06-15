@@ -3,10 +3,10 @@
 module DataMapper
   module Adapters
     class CassandraAdapter < AbstractAdapter
-      class Command
+      module Command
 
         # Update records in Cassandra
-        class Update < self
+        class Update
           def initialize(adapter, attributes, collection)
             @adapter    = adapter
             @attributes = attributes
@@ -32,11 +32,8 @@ module DataMapper
             @collection.count
           end
 
-          class Statement
-            UPDATE      = 'UPDATE %{table} SET %{attributes} WHERE %{key}'.freeze
-            PLACEHOLDER = '?'.freeze
-            SEPARATOR   = ', '.freeze
-            AND         = ' AND '.freeze
+          class Statement < Statement
+            UPDATE = 'UPDATE %{table} SET %{columns} WHERE %{where}'.freeze
 
             def initialize(table, attributes, key)
               @table      = table
@@ -50,23 +47,20 @@ module DataMapper
 
             def to_s
               UPDATE % {
-                table:      @table,
-                attributes: attributes_clause,
-                key:        key_clause,
+                table:   @table,
+                columns: columns.join(SEPARATOR),
+                where:   where.join(AND)
               }
             end
 
           private
 
-            def attributes_clause
-              @attributes.keys.map { |property|
-                "#{property.field} = #{PLACEHOLDER}"
-              }.join(SEPARATOR)
+            def columns
+              @attributes.keys.map(&method(:eql))
             end
 
-            def key_clause
-              @key.keys.map { |property| "#{property.field} = #{PLACEHOLDER}" }.
-                join(AND)
+            def where
+              @key.keys.map(&method(:eql))
             end
 
           end # Statement

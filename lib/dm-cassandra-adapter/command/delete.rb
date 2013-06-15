@@ -3,10 +3,10 @@
 module DataMapper
   module Adapters
     class CassandraAdapter < AbstractAdapter
-      class Command
+      module Command
 
         # Delete records in Cassandra
-        class Delete < self
+        class Delete
           def initialize(adapter, collection)
             @adapter    = adapter
             @collection = collection
@@ -30,10 +30,8 @@ module DataMapper
             @collection.count
           end
 
-          class Statement
-            DELETE      = 'DELETE FROM %{table} WHERE %{key}'.freeze
-            PLACEHOLDER = '?'.freeze
-            AND         = ' AND '.freeze
+          class Statement < Statement
+            DELETE = 'DELETE FROM %{table} WHERE %{where}'.freeze
 
             def initialize(table, key)
               @table = table
@@ -45,14 +43,16 @@ module DataMapper
             end
 
             def to_s
-              DELETE % { table: @table, key: key_clause }
+              DELETE % {
+                table: @table,
+                where: where.join(AND),
+              }
             end
 
           private
 
-            def key_clause
-              @key.keys.map { |property| "#{property.field} = #{PLACEHOLDER}" }.
-                join(AND)
+            def where
+              @key.keys.map(&method(:eql))
             end
 
           end # Statement

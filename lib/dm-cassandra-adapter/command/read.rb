@@ -3,10 +3,10 @@
 module DataMapper
   module Adapters
     class CassandraAdapter < AbstractAdapter
-      class Command
+      module Command
 
         # Read record in Cassandra
-        class Read < self
+        class Read
           include Enumerable
 
           def initialize(adapter, query)
@@ -33,17 +33,11 @@ module DataMapper
             Statement.new(@table, fields, conditions, order, limit)
           end
 
-          class Statement
-            SELECT        = 'SELECT %{columns} FROM %{table}'.freeze
-            WHERE         = 'WHERE %s'.freeze
-            ORDER         = 'ORDER BY %s'.freeze
-            LIMIT         = 'LIMIT %d'.freeze
-            AND           = 'AND'.freeze
-            L_PARENTHESIS = '('.freeze
-            R_PARENTHESIS = ')'.freeze
-            SEPARATOR     = ', '.freeze
-            SPACE         = ' '.freeze
-            PLACEHOLDER   = '?'.freeze
+          class Statement < Statement
+            SELECT = 'SELECT %{columns} FROM %{table}'.freeze
+            WHERE  = 'WHERE %s'.freeze
+            ORDER  = 'ORDER BY %s'.freeze
+            LIMIT  = 'LIMIT %d'.freeze
 
             attr_reader :bind_variables
 
