@@ -11,18 +11,16 @@ module DataMapper
             @adapter    = adapter
             @attributes = attributes
             @collection = collection
+            @model      = @collection.model
+            @table      = @model.storage_name(@adapter.name)
           end
 
           def call
             # TODO: batch the statements
             # TODO: handle bulk updates with IN() when there is one key
             @collection.each do |resource|
-              model      = resource.model
-              table      = model.storage_name(@adapter.name)
-              attributes = resource.dirty_attributes
-              key        = Hash[model.key.zip(resource.key)]
-
-              statement = Statement.new(table, attributes, key)
+              key       = Hash[@model.key.zip(resource.key)]
+              statement = Statement.new(@table, key, resource.dirty_attributes)
               @adapter.execute(statement.to_s, *statement.bind_variables)
             end
             self
@@ -35,10 +33,10 @@ module DataMapper
           class Statement < Statement
             UPDATE = 'UPDATE %{table} SET %{columns} WHERE %{where}'.freeze
 
-            def initialize(table, attributes, key)
+            def initialize(table, key, attributes)
               @table      = table
-              @attributes = attributes
               @key        = key
+              @attributes = attributes
             end
 
             def bind_variables

@@ -10,17 +10,16 @@ module DataMapper
           def initialize(adapter, collection)
             @adapter    = adapter
             @collection = collection
+            @model      = @collection.model
+            @table      = @model.storage_name(@adapter.name)
           end
 
           def call
             # TODO: batch the statements
             # TODO: handle bulk deletes with IN() when there is one key
             @collection.each do |resource|
-              model = resource.model
-              table = model.storage_name(@adapter.name)
-              key   = Hash[model.key.zip(resource.key)]
-
-              statement = Statement.new(table, key)
+              key       = Hash[@model.key.zip(resource.key)]
+              statement = Statement.new(@table, key)
               @adapter.execute(statement.to_s, *statement.bind_variables)
             end
             self

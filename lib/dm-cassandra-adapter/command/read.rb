@@ -12,7 +12,7 @@ module DataMapper
           def initialize(adapter, query)
             @adapter = adapter
             @query   = query
-            @table   = query.model.storage_name(@adapter.name)
+            @table   = @query.model.storage_name(@adapter.name)
           end
 
           def each(&block)
