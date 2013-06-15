@@ -49,7 +49,7 @@ module DataMapper
               @where          = []
               @bind_variables = []
               visit_conditions
-#              visit_order(order) if equals_key_condition?
+#              visit_order(order) if matches_key?
 
               # Only set the limit if the order is defined, otherwise we must
               # retrieve all rows and sort/limit in-memory.
@@ -101,22 +101,22 @@ module DataMapper
             end
 
             def visit_gt(*args)
-              return unless equals_key_condition?
+              return unless matches_key?
               visit_binary_relation(*args, GREATER_THAN_SIGN)
             end
 
             def visit_lt(*args)
-              return unless equals_key_condition?
+              return unless matches_key?
               visit_binary_relation(*args, LESS_THAN_SIGN)
             end
 
             def visit_gte(*args)
-              return unless equals_key_condition?
+              return unless matches_key?
               visit_binary_relation(*args, GREATER_THAN_OR_EQUAL_TO)
             end
 
             def visit_lte(*args)
-              return unless equals_key_condition?
+              return unless matches_key?
               visit_binary_relation(*args, LESS_THAN_OR_EQUAL_TO)
             end
 
@@ -139,7 +139,7 @@ module DataMapper
               end
             end
 
-            def equals_key_condition?
+            def matches_key?
               @conditions.kind_of?(Query::Conditions::AndOperation) &&
               @conditions.any? do |condition|
                 condition.respond_to?(:subject) &&
