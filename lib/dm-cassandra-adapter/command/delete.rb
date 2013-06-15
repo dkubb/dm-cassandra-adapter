@@ -56,7 +56,7 @@ module DataMapper
 
           end # Statement
         end # Delete
-      end # Statement
+      end # Command
     end # CassandraAdapter
   end # Adapters
 end # DataMapper

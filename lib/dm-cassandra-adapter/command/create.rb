@@ -70,7 +70,7 @@ module DataMapper
 
           end # Statement
         end # Create
-      end # Statement
+      end # Command
     end # CassandraAdapter
   end # Adapters
 end # DataMapper

@@ -150,7 +150,7 @@ module DataMapper
 
           end # Statement
         end # Read
-      end # Statement
+      end # Command
     end # CassandraAdapter
   end # Adapters
 end # DataMapper
