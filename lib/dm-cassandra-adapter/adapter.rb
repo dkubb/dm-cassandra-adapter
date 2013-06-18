@@ -8,6 +8,7 @@ module DataMapper
 
       def initialize(*)
         super
+        @keyspace    = options.fetch(:keyspace) { options.fetch(:path)[1..-1] }
         @consistency = options.fetch(:consistency, :any)
         setup_client
       end
@@ -45,7 +46,7 @@ module DataMapper
 
       def setup_client
         @client = Ciql::Client::Thrift.new(
-          options.merge(keyspace: options.fetch(:path)[1..-1]).symbolize_keys
+          options.merge(keyspace: @keyspace).symbolize_keys
         )
       end
 
