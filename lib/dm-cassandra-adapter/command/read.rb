@@ -91,9 +91,13 @@ module DataMapper
             end
 
             def visit_comparison(comparison)
-              method = "visit_#{comparison.slug}"
-              return unless respond_to?(method, true)
-              send(method, comparison.subject, comparison.value)
+              if comparison.relationship?
+                visit_conditions(comparison.foreign_key_mapping)
+              else
+                method = "visit_#{comparison.slug}"
+                return unless respond_to?(method, true)
+                send(method, comparison.subject, comparison.value)
+              end
             end
 
             def visit_eql(*args)
