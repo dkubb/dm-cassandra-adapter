@@ -8,8 +8,8 @@ module DataMapper
 
       def initialize(*)
         super
-        @keyspace    = options.fetch(:keyspace) { options.fetch(:path)[1..-1] }
-        @consistency = options.fetch(:consistency, :any)
+        setup_keyspace
+        setup_consistency
         setup_client
       end
 
@@ -43,6 +43,14 @@ module DataMapper
       end
 
     private
+
+      def setup_keyspace
+        @keyspace = options.fetch(:keyspace) { options.fetch(:path)[1..-1] }
+      end
+
+      def setup_consistency
+        @consistency = options.fetch(:consistency, :any)
+      end
 
       def setup_client
         @client = Ciql::Client::Thrift.new(
