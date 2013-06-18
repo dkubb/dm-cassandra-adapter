@@ -33,12 +33,12 @@ module DataMapper
         Command::Delete.new(self, collection).call.count
       end
 
-      def select(statement, *bind_variables)
-        @client.execute(statement, *bind_variables).map(&:to_hash)
+      def select(*args)
+        log(*args) { @client.execute(*args).map(&:to_hash) }
       end
 
-      def execute(statement, *bind_variables)
-        @client.execute(statement, *bind_variables, @consistency)
+      def execute(*args)
+        log(*args) { @client.execute(*args, @consistency) }
         nil
       end
 
@@ -55,6 +55,23 @@ module DataMapper
       def setup_client
         @client = Ciql::Client::Thrift.new(
           options.merge(keyspace: @keyspace).symbolize_keys
+        )
+      end
+
+      def log(*args, &block)
+        times = Benchmark.measure(&block)
+        DataMapper.logger.debug do
+          '(%<total>.6fms) %{statement}' % {
+            total:     times.real * 10**3,
+            statement: sanitize(*args),
+          }
+        end
+      end
+
+      def sanitize(statement, *bind_variables)
+        Ciql::Sanitize.sanitize(
+          statement.gsub(/\s+/, ' ').strip,
+          *bind_variables
         )
       end
 

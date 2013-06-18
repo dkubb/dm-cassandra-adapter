@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'benchmark'
+
 require 'dm-core'
 require 'ciql'
 
