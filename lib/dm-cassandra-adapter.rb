@@ -4,6 +4,7 @@ require 'benchmark'
 
 require 'dm-core'
 require 'ciql'
+require 'connection_pool'
 
 require 'dm-cassandra-adapter/property/simple_uuid'
 

@@ -6,11 +6,14 @@ module DataMapper
     # Cassandra DataMapper Adapter
     class CassandraAdapter < AbstractAdapter
 
+      DEFAULT_POOL_SIZE = 8
+      DEFAULT_TIMEOUT   = 5
+
       def initialize(*)
         super
         setup_keyspace
         setup_consistency
-        setup_client
+        setup_connection_pool
       end
 
       def create(resources)
@@ -34,11 +37,15 @@ module DataMapper
       end
 
       def select(*args)
-        log(*args) { @client.execute(*args).map(&:to_hash) }
+        with_client do |client|
+          log(*args) { client.execute(*args).map(&:to_hash) }
+        end
       end
 
       def execute(*args)
-        log(*args) { @client.execute(*args, @consistency) }
+        with_client do |client|
+          log(*args) { client.execute(*args, @consistency) }
+        end
         nil
       end
 
@@ -52,14 +59,30 @@ module DataMapper
         @consistency = options.fetch(:consistency, :any)
       end
 
-      def setup_client
-        @client = Ciql::Client::Thrift.new(
-          options.merge(keyspace: @keyspace).symbolize_keys
-        )
+      def setup_connection_pool
+        @pool_size = options.fetch(:pool_size) { DEFAULT_POOL_SIZE }
+        @timeout   = options.fetch(:timeout)   { DEFAULT_TIMEOUT   }
+
+        @pool = ConnectionPool.new(size: @pool_size, timeout: @timeout) {
+          Ciql::Client::Thrift.new(
+            options.merge(keyspace: @keyspace).symbolize_keys
+          )
+        }
       end
 
-      def log(*args, &block)
-        times = Benchmark.measure(&block)
+      def with_client(&block)
+        @pool.with(&block)
+      end
+
+      def log(*args)
+        return_value = nil
+        times = Benchmark.measure { return_value = yield }
+        return_value
+      ensure
+        debug(times, *args)
+      end
+
+      def debug(times, *args)
         DataMapper.logger.debug do
           '(%<total>.6fms) %{statement}' % {
             total:     times.real * 10**3,
