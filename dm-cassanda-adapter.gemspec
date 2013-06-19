@@ -17,9 +17,10 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.3'
 
-  gem.add_runtime_dependency('dm-core',     '~> 1.2.1')
-  gem.add_runtime_dependency('ciql',        '~> 0.2')
-  gem.add_runtime_dependency('simple_uuid', '~> 0.3')
+  gem.add_runtime_dependency('ciql',            '~> 0.2')
+  gem.add_runtime_dependency('connection_pool', '~> 1.1.0')
+  gem.add_runtime_dependency('dm-core',         '~> 1.2.1')
+  gem.add_runtime_dependency('simple_uuid',     '~> 0.3')
 
   gem.add_development_dependency('bundler', '~> 1.3', '>= 1.3.5')
 end
