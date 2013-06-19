@@ -76,10 +76,8 @@ module DataMapper
 
       def log(*args)
         return_value = nil
-        times = Benchmark.measure { return_value = yield }
+        debug(Benchmark.measure { return_value = yield }, *args)
         return_value
-      ensure
-        debug(times, *args)
       end
 
       def debug(times, *args)
