@@ -62,12 +62,15 @@ module DataMapper
       def setup_connection_pool
         @pool_size = options.fetch(:pool_size) { DEFAULT_POOL_SIZE }
         @timeout   = options.fetch(:timeout)   { DEFAULT_TIMEOUT   }
+        @pool      = new_pool
+      end
 
-        @pool = ConnectionPool.new(size: @pool_size, timeout: @timeout) {
+      def new_pool
+        ConnectionPool.new(size: @pool_size, timeout: @timeout) do
           Ciql::Client::Thrift.new(
             options.merge(keyspace: @keyspace).symbolize_keys
           )
-        }
+        end
       end
 
       def with_client(&block)
