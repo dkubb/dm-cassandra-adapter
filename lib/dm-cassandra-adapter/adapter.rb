@@ -49,6 +49,12 @@ module DataMapper
         nil
       end
 
+      def reset
+        @pool.shutdown(&:disconnect!)
+        @pool = new_pool
+        self
+      end
+
     private
 
       def setup_keyspace
