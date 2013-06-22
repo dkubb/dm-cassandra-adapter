@@ -62,7 +62,7 @@ module DataMapper
       end
 
       def setup_consistency
-        @consistency = options.fetch(:consistency, :any)
+        @consistency = options.fetch(:consistency, :any).to_sym
       end
 
       def setup_connection_pool
