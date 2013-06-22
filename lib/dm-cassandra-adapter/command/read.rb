@@ -84,9 +84,7 @@ module DataMapper
                 @where << SPACE
                 @where << AND
                 @where << SPACE
-                @where << L_PARENTHESIS
                 visit_conditions(operand)
-                @where << R_PARENTHESIS
               end
             end
 
