@@ -36,6 +36,11 @@ module DataMapper
         Command::Delete.new(self, collection).call.count
       end
 
+      def aggregate(query)
+        # Aggregate records matching the query
+        Command::Aggregate.new(self, query).result
+      end
+
       def select(*args)
         with_client do |client|
           log(*args) { client.execute(*args).map(&:to_hash) }
