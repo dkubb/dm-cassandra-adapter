@@ -22,6 +22,9 @@ require 'dm-cassandra-adapter/spec/setup'
 
 require 'devtools/spec_helper'
 
+# Capture Ciql query logging
+Ciql.logger = Logger.new(StringIO.new)
+
 # require spec support files and shared behavior
 Dir[File.expand_path('../{support,shared}/**/*.rb', __FILE__)].each do |file|
   require file
