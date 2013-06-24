@@ -38,13 +38,13 @@ module DataMapper
 
       def select(*args)
         with_client do |client|
-          log(*args) { client.execute(*args).map(&:to_hash) }
+          client.execute(*args).map(&:to_hash)
         end
       end
 
       def execute(*args)
         with_client do |client|
-          log(*args) { client.execute(*args, @consistency) }
+          client.execute(*args, @consistency)
         end
         nil
       end
@@ -81,28 +81,6 @@ module DataMapper
 
       def with_client(&block)
         @pool.with(&block)
-      end
-
-      def log(*args)
-        return_value = nil
-        debug(Benchmark.measure { return_value = yield }, *args)
-        return_value
-      end
-
-      def debug(times, *args)
-        DataMapper.logger.debug do
-          '(%<total>.6fms) %{statement}' % {
-            total:     times.real * 10**3,
-            statement: sanitize(*args),
-          }
-        end
-      end
-
-      def sanitize(statement, *bind_variables)
-        Ciql::Sanitize.sanitize(
-          statement.gsub(/\s+/, ' ').strip,
-          *bind_variables
-        )
       end
 
     end # CassandraAdapter
