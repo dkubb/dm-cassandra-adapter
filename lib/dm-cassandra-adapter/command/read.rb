@@ -25,8 +25,11 @@ module DataMapper
 
         protected
 
+          def fields
+            @query.fields.map(&:field)
+          end
+
           def statement
-            fields     = @query.fields.map(&:field)
             conditions = @query.conditions
             order      = @query.order
             limit      = @query.limit if @query.offset.zero?
