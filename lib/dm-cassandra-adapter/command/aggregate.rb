@@ -8,19 +8,34 @@ module DataMapper
         # Aggregate records in Cassandra
         class Aggregate < Read
 
+          def initialize(*)
+            super
+            @operators, @properties = @query.fields.partition do |field|
+              field.kind_of?(DataMapper::Query::Operator)
+            end
+          end
+
           def result
-            map { |row| row[@operators.first.operator.to_s] }
+            first_operator_name = @operators.first.operator.to_s
+            map { |row| row[first_operator_name] }
           end
 
         protected
 
           def fields
-            @operators = []
-            @query.fields.map do |field|
-              return field.field unless field.kind_of?(DataMapper::Query::Operator)
-              @operators << field
-              argument = field.target == :all ? '*' : field.target.field
-              function = field.operator.to_s.upcase
+            [operator_fields, property_fields].flatten
+          end
+
+        private
+
+          def property_fields
+            @properties.map(&:field)
+          end
+
+          def operator_fields
+            @operators.map do |operator|
+              argument = operator.target == :all ? '*' : operator.target.field
+              function = operator.operator.to_s.upcase
               "#{function}(#{argument})"
             end
           end
