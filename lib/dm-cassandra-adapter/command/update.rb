@@ -21,7 +21,7 @@ module DataMapper
             @collection.each do |resource|
               key       = Hash[@model.key.zip(resource.key)]
               statement = Statement.new(@table, key, resource.dirty_attributes)
-              @adapter.execute(statement.to_s, *statement.bind_variables)
+              statement.run(@adapter.method(:execute))
             end
             self
           end

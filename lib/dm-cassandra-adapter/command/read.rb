@@ -17,8 +17,7 @@ module DataMapper
 
           def each(&block)
             return to_enum unless block
-            statement = self.statement
-            rows = @adapter.select(statement.to_s, *statement.bind_variables)
+            rows = statement.run(@adapter.method(:select), @consistency)
             rows.each(&block)
             self
           end

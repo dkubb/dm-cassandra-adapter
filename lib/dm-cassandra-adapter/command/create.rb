@@ -18,7 +18,7 @@ module DataMapper
               set_serial(resource)
               table     = resource.model.storage_name(@adapter.name)
               statement = Statement.new(table, resource.dirty_attributes)
-              @adapter.execute(statement.to_s, *statement.bind_variables)
+              statement.run(@adapter.method(:execute))
             end
             self
           end

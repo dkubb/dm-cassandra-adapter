@@ -12,7 +12,6 @@ module DataMapper
       def initialize(*)
         super
         setup_keyspace
-        setup_consistency
         setup_connection_pool
       end
 
@@ -49,7 +48,7 @@ module DataMapper
 
       def execute(*args)
         with_client do |client|
-          client.execute(*args, @consistency)
+          client.execute(*args)
         end
         nil
       end
@@ -64,10 +63,6 @@ module DataMapper
 
       def setup_keyspace
         @keyspace = options.fetch(:keyspace) { options.fetch(:path)[1..-1] }
-      end
-
-      def setup_consistency
-        @consistency = options.fetch(:consistency, :any).to_sym
       end
 
       def setup_connection_pool
