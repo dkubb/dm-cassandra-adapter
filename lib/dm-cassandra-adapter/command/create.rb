@@ -6,7 +6,7 @@ module DataMapper
       module Command
 
         # Create records in Cassandra
-        class Create
+        class Create < Abstract
           def initialize(adapter, resources)
             @adapter   = adapter
             @resources = resources
@@ -18,7 +18,10 @@ module DataMapper
               set_serial(resource)
               table     = resource.model.storage_name(@adapter.name)
               statement = Statement.new(table, resource.dirty_attributes)
-              statement.run(@adapter.method(:execute))
+              statement.run(
+                @adapter.method(:execute),
+                consistency_for(resource.model, :write)
+              )
             end
             self
           end

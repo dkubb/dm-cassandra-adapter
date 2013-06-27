@@ -42,8 +42,8 @@ module DataMapper
             end
           end
 
-        end
-      end
-    end
-  end
-end
+        end # Aggregate
+      end # Command
+    end # CassandraAdapter
+  end # Adapters
+end # DataMapper

@@ -6,12 +6,13 @@ module DataMapper
       module Command
 
         # Delete records in Cassandra
-        class Delete
+        class Delete < Abstract
           def initialize(adapter, collection)
-            @adapter    = adapter
-            @collection = collection
-            @model      = @collection.model
-            @table      = @model.storage_name(@adapter.name)
+            @adapter     = adapter
+            @collection  = collection
+            @model       = @collection.model
+            @table       = @model.storage_name(@adapter.name)
+            @consistency = consistency_for(@collection.model, :write)
           end
 
           def call
@@ -20,7 +21,7 @@ module DataMapper
             @collection.each do |resource|
               key       = Hash[@model.key.zip(resource.key)]
               statement = Statement.new(@table, key)
-              statement.run(@adapter.method(:execute))
+              statement.run(@adapter.method(:execute), @consistency)
             end
             self
           end

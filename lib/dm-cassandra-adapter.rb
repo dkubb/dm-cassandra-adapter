@@ -11,6 +11,7 @@ require 'dm-cassandra-adapter/property/simple_uuid'
 require 'dm-cassandra-adapter/constants'
 require 'dm-cassandra-adapter/statement'
 
+require 'dm-cassandra-adapter/command/abstract'
 require 'dm-cassandra-adapter/command/create'
 require 'dm-cassandra-adapter/command/read'
 require 'dm-cassandra-adapter/command/update'
