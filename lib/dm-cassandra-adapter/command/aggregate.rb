@@ -10,6 +10,8 @@ module DataMapper
 
           def initialize(*)
             super
+            # Aggregate queries fail if the read consistency is not :one
+            @consistency = :one
             @operators, @properties = @query.fields.partition do |field|
               field.kind_of?(DataMapper::Query::Operator)
             end
@@ -40,8 +42,8 @@ module DataMapper
             end
           end
 
-        end
-      end
-    end
-  end
-end
+        end # Aggregate
+      end # Command
+    end # CassandraAdapter
+  end # Adapters
+end # DataMapper
