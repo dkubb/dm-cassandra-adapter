@@ -6,19 +6,19 @@ module DataMapper
       module Command
 
         # Read record in Cassandra
-        class Read
+        class Read < Abstract
           include Enumerable
 
           def initialize(adapter, query)
-            @adapter = adapter
-            @query   = query
-            @table   = @query.model.storage_name(@adapter.name)
+            @adapter     = adapter
+            @query       = query
+            @table       = @query.model.storage_name(@adapter.name)
+            @consistency = consistency_for(@query.model, :read)
           end
 
           def each(&block)
             return to_enum unless block
-            statement = self.statement
-            rows = @adapter.select(statement.to_s, *statement.bind_variables)
+            rows = statement.run(@adapter.method(:select), @consistency)
             rows.each(&block)
             self
           end

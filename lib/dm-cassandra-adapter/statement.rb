@@ -8,6 +8,10 @@ module DataMapper
       class Statement
         include Constants
 
+        def run(method, consistency = :quorum)
+          method.call(to_s, *bind_variables, consistency)
+        end
+
       protected
 
         def and(statements)

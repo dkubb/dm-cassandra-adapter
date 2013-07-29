@@ -6,13 +6,14 @@ module DataMapper
       module Command
 
         # Update records in Cassandra
-        class Update
+        class Update < Abstract
           def initialize(adapter, attributes, collection)
-            @adapter    = adapter
-            @attributes = attributes
-            @collection = collection
-            @model      = @collection.model
-            @table      = @model.storage_name(@adapter.name)
+            @adapter     = adapter
+            @attributes  = attributes
+            @collection  = collection
+            @model       = @collection.model
+            @table       = @model.storage_name(@adapter.name)
+            @consistency = consistency_for(@model, :write)
           end
 
           def call
@@ -21,7 +22,7 @@ module DataMapper
             @collection.each do |resource|
               key       = Hash[@model.key.zip(resource.key)]
               statement = Statement.new(@table, key, resource.dirty_attributes)
-              @adapter.execute(statement.to_s, *statement.bind_variables)
+              statement.run(@adapter.method(:execute), @consistency)
             end
             self
           end
