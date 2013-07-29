@@ -15,29 +15,6 @@ dm-cassandra-adapter
 
 Cassandra DataMapper Adapter
 
-Installation
-------------
-
-With Rubygems:
-
-```bash
-$ gem install dm-cassandra-adapter
-$ irb -rubygems
->> require 'dm-cassandra-adapter'
-=> true
-```
-
-With git and local working copy:
-
-```bash
-$ git clone git://github.com/dkubb/dm-cassandra-adapter.git
-$ cd dm-cassandra-adapter
-$ rake install
-$ irb -rubygems
->> require 'dm-cassandra-adapter'
-=> true
-```
-
 Contributing
 ------------
 
