@@ -1,0 +1,4 @@
+---
+name: dm-cassandra-adapter
+namespace: DataMapper::Adapters::CassandraAdapter
+strategy: --rspec-full
