@@ -84,9 +84,7 @@ module DataMapper
               head, *tail = conjunction.to_a
               visit_conditions(head)
               tail.each do |operand|
-                @where << SPACE
-                @where << AND
-                @where << SPACE
+                @where << SPACE << AND << SPACE
                 visit_conditions(operand)
               end
             end
