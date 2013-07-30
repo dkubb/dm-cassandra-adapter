@@ -12,12 +12,6 @@ rvm:
   - 2.0.0
   - ruby-head
   - rbx-19mode
-notifications:
-  email:
-    recipients:
-      - dan.kubb@gmail.com
-    on_success: never
-    on_failure: change
 matrix:
   include:
     - rvm: jruby-19mode
@@ -27,3 +21,9 @@ matrix:
   allow_failures:
     # broken on travis
     - rvm: ruby-head
+notifications:
+  email:
+    recipients:
+      - dan.kubb@gmail.com
+    on_success: never
+    on_failure: change
