@@ -9,7 +9,7 @@ describe 'DataMapper::Adapters::CassandraAdapter' do
   def setup_keyspace
     client = Ciql.client
     client.execute("CREATE KEYSPACE datamapper_default_tests WITH replication = {'class': ?, 'replication_factor': ?}", 'SimpleStrategy', 1)
-  rescue CassandraCQL::Error::InvalidRequestException => exception
+  rescue Cql::QueryError => exception
     raise unless exception.message.include?('Cannot add existing keyspace')
     client.execute('DROP KEYSPACE datamapper_default_tests')
     retry
