@@ -21,6 +21,7 @@ matrix:
   allow_failures:
     # broken on travis
     - rvm: ruby-head
+    - rvm: rbx
 notifications:
   email:
     recipients:
