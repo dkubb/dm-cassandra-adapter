@@ -7,6 +7,7 @@ require 'ciql'
 require 'connection_pool'
 
 require 'dm-cassandra-adapter/property/simple_uuid'
+require 'dm-cassandra-adapter/property/collection'
 
 require 'dm-cassandra-adapter/constants'
 require 'dm-cassandra-adapter/statement'
