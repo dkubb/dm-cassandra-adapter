@@ -6,18 +6,6 @@ ENV['ADAPTER']          = 'cassandra'
 ENV['ADAPTER_SUPPORTS'] = 'all'
 
 describe 'DataMapper::Adapters::CassandraAdapter' do
-  def setup_keyspace
-    client = Ciql.client
-    client.execute("CREATE KEYSPACE datamapper_default_tests WITH replication = {'class': ?, 'replication_factor': ?}", 'SimpleStrategy', 1)
-  rescue Cql::QueryError => exception
-    raise unless exception.message.include?('Cannot add existing keyspace')
-    client.execute('DROP KEYSPACE datamapper_default_tests')
-    retry
-  end
-
-  # Use methods to avoid let() in before(:all) warnings
-  def adapter() DataMapper::Spec.adapter end
-  def repository() DataMapper.repository(adapter.name) end
 
   context 'with a generated UUID key' do
     # Define a table with a UUID key
