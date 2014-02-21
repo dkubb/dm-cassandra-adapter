@@ -22,5 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency('dm-core',         '~> 1.2.1')
   gem.add_runtime_dependency('simple_uuid',     '~> 0.4.0')
 
+  gem.add_development_dependency('dm-types', '~> 1.2.2')
   gem.add_development_dependency('bundler', '~> 1.3', '>= 1.3.5')
 end
