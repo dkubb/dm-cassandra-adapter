@@ -48,16 +48,13 @@ module DataMapper
               @table          = table
               @columns        = list(fields)
               @conditions     = conditions
+              @limit          = limit
               @order          = []
               @where          = []
               @bind_variables = []
               @key_matched    = false
               visit_conditions
-#              visit_order(order) if matches_key?
-
-              # Only set the limit if the order is defined, otherwise we must
-              # retrieve all rows and sort/limit in-memory.
-              @limit = limit unless @order.empty?
+              visit_order(order || []) if @key_matched
             end
 
             def to_s
