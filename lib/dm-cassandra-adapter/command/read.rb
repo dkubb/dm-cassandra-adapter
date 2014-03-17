@@ -51,6 +51,7 @@ module DataMapper
               @order          = []
               @where          = []
               @bind_variables = []
+              @key_matched    = false
               visit_conditions
 #              visit_order(order) if matches_key?
 
@@ -101,25 +102,26 @@ module DataMapper
 
             def visit_eql(*args)
               visit_binary_relation(*args, EQUALS_SIGN)
+              @key_matched ||= args[0].key?
             end
 
             def visit_gt(*args)
-              return unless matches_key?
+              return unless @key_matched
               visit_binary_relation(*args, GREATER_THAN_SIGN)
             end
 
             def visit_lt(*args)
-              return unless matches_key?
+              return unless @key_matched
               visit_binary_relation(*args, LESS_THAN_SIGN)
             end
 
             def visit_gte(*args)
-              return unless matches_key?
+              return unless @key_matched
               visit_binary_relation(*args, GREATER_THAN_OR_EQUAL_TO)
             end
 
             def visit_lte(*args)
-              return unless matches_key?
+              return unless @key_matched
               visit_binary_relation(*args, LESS_THAN_OR_EQUAL_TO)
             end
 
@@ -139,15 +141,6 @@ module DataMapper
                 field(direction.target).tap do |statement|
                   statement << SPACE << DESC if direction.operator == :desc
                 end
-              end
-            end
-
-            def matches_key?
-              @conditions.kind_of?(Query::Conditions::AndOperation) &&
-              @conditions.any? do |condition|
-                condition.respond_to?(:subject) &&
-                condition.subject.key?          &&
-                [ :eql, :in ].include?(condition.slug)
               end
             end
 
