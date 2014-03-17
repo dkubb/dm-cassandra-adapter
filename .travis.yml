@@ -19,12 +19,13 @@ matrix:
     - rvm: jruby-head
       env: JRUBY_OPTS="$JRUBY_OPTS --debug"
   allow_failures:
-    # broken on travis
-    - rvm: ruby-head
-    - rvm: rbx
+    # dm-core adapter spec occassionally fails on JRuby (i.e. Bignum too large
+    # to convert to long)
+    - rvm: jruby
+    - rvm: jruby-head
 notifications:
   email:
     recipients:
-      - dan.kubb@gmail.com
+      - jabradford@gmail.com
     on_success: never
     on_failure: change
