@@ -28,7 +28,7 @@ describe DataMapper::Adapters::CassandraAdapter::Command::Read do
       model.all(limit: 5).query
     end
 
-    it 'should generate a query with the limit' do
+    it 'generates a query with the limit' do
       expect_select(
         'SELECT id, time, size FROM models LIMIT 5', nil
       )
@@ -40,7 +40,7 @@ describe DataMapper::Adapters::CassandraAdapter::Command::Read do
       model.all(id: 1, order: [:time]).query
     end
 
-    it 'should generate a query with the order' do
+    it 'generates a query with the order' do
       expect_select(
         'SELECT id, time, size FROM models WHERE id=? ORDER BY time', 1, nil
       )
@@ -51,9 +51,21 @@ describe DataMapper::Adapters::CassandraAdapter::Command::Read do
         model.all(id: 1, order: :time.desc).query
       end
 
-      it 'should generate a query with the order' do
+      it 'generates a query with the order' do
         expect_select(
           'SELECT id, time, size FROM models WHERE id=? ORDER BY time DESC', 1, nil
+        )
+      end
+    end
+
+    describe "that matches the model's key" do
+      let(:query) do
+        model.all(id: 1, order: [:id, :time]).query
+      end
+
+      it 'ignores the order' do
+        expect_select(
+          'SELECT id, time, size FROM models WHERE id=?', 1, nil
         )
       end
     end

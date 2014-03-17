@@ -31,7 +31,9 @@ module DataMapper
 
           def statement
             conditions = @query.conditions
-            order      = @query.order
+            order      = @query.order || []
+            # Ignore order if it matches the model's key
+            order      = [] if order.map(&:target) == @query.model.key
             limit      = @query.limit if @query.offset.zero?
             Statement.new(@table, fields, conditions, order, limit)
           end
@@ -54,7 +56,7 @@ module DataMapper
               @where          = []
               @bind_variables = []
               visit_conditions
-              visit_order(order || []) if @key_matched
+              visit_order(order) if @key_matched
             end
 
             def to_s
