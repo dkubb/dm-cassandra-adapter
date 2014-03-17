@@ -41,7 +41,7 @@ module DataMapper
             end
 
             def bind_variables
-              @attributes.values + @key.values
+              @attributes.values + @key.map { |key, value| key.dump(value) }
             end
 
             def to_s
