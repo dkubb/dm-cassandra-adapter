@@ -6,7 +6,7 @@ module DataMapper
     # Cassandra DataMapper Adapter
     class CassandraAdapter < AbstractAdapter
 
-      DEFAULT_POOL_SIZE = 8
+      DEFAULT_POOL_SIZE = 1 # Binary client supports concurrent requests
       DEFAULT_TIMEOUT   = 5
 
       def initialize(*)
@@ -73,7 +73,7 @@ module DataMapper
 
       def new_pool
         ConnectionPool.new(size: @pool_size, timeout: @timeout) do
-          Ciql::Client::Thrift.new(
+          Ciql::Client::Binary.new(
             options.merge(keyspace: @keyspace).symbolize_keys
           )
         end

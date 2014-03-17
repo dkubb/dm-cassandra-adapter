@@ -39,7 +39,7 @@ module DataMapper
             end
 
             def bind_variables
-              @key.values
+              @key.map { |key, value| key.dump(value) }
             end
 
             def to_s

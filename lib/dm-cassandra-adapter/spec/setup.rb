@@ -14,7 +14,7 @@ module DataMapper
       class CassandraAdapter < Adapter
 
         def connection_uri
-          'cassandra://127.0.0.1:9160/datamapper_default_tests'
+          'cassandra://127.0.0.1:9042/datamapper_default_tests'
         end
 
         def test_connection(adapter)
