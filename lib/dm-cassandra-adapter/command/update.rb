@@ -28,7 +28,7 @@ module DataMapper
           end
 
           def count
-            @collection.count
+            @collection.loaded? ? @collection.size : @collection.count
           end
 
           class Statement < Statement

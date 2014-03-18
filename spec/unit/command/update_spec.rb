@@ -40,4 +40,32 @@ describe DataMapper::Adapters::CassandraAdapter::Command::Update do
       subject.call
     end
   end
+
+  describe '#count' do
+    describe 'when the collection is loaded' do
+      let(:collection) { resource.collection_for_self }
+
+      it 'should not execute a count query' do
+        DataMapper::Collection.any_instance.should_not_receive(:count)
+        subject.count
+      end
+    end
+
+    describe 'when the collection is not loaded' do
+      let(:collection) { model.all(type: :one) }
+
+      before do
+        DataMapper::Collection.any_instance.should_receive(:count).and_return
+      end
+
+      it 'should execute a count query' do
+        subject.count
+      end
+
+      it 'does not load the whole collection' do
+        DataMapper::Collection.any_instance.should_not_receive(:lazy_load)
+        subject.count
+      end
+    end
+  end
 end
