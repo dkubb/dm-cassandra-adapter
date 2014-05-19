@@ -31,8 +31,8 @@ describe 'aggregate support' do
   subject { described_class }
 
   describe '#count' do
-    before :all do
-      model.count.should eq 0
+    before do
+      model.destroy
       model.create(user: 1, type: 1, time: Time.now)
       model.create(user: 1, type: 2, time: Time.now)
       model.create(user: 2, type: 1, time: Time.now)
