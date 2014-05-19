@@ -20,9 +20,8 @@ matrix:
     - rvm: jruby-head
       env: JRUBY_OPTS="$JRUBY_OPTS --debug"
   allow_failures:
-    # dm-core adapter spec occassionally fails on JRuby (i.e. Bignum too large
-    # to convert to long)
-    - rvm: jruby
+    - rvm: rbx-2.1.1
+    - rvm: ruby-head
     - rvm: jruby-head
 notifications:
   email:
